@@ -6,6 +6,7 @@ use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\Kmeans;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -43,3 +44,12 @@ Route::resource('dosen', DosenController::class);
 
 //Laporan
 Route::resource('laporan', LaporanController::class);
+
+
+Route::get("/pw", function() {
+
+    echo password_hash( "123", PASSWORD_DEFAULT );
+});
+
+
+Route::get("/hitung", [Kmeans::class, 'index']);
