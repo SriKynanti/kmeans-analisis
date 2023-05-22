@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 
 class Kmeans extends Controller
@@ -80,35 +81,115 @@ class Kmeans extends Controller
 
 
         // proses perhitungan 
-        foreach ( $dataset_filtered AS $isi_ds ) {
-
+        $hasil_cluster = [];
+        $hasil_jarak = [];
+        $data_centroid_baru = [];
+        foreach ( $dataset_filtered AS $index_ds => $isi_ds ) {
 
             // jarak antara value per mhs dengan centroid
             $dt_hasil_jarak = array();
-            echo $isi_ds['nama'].'<br>';
+            // echo $isi_ds['nama'].'<br>';
 
-            foreach ( $dt_centroid AS $c ) {
+            foreach ( $dt_centroid AS $index => $c ) {
                 
                 $total = 0;
                 // seleksi variabel yang dihitung
                 foreach ( $dt_variabel_pilihan AS $pilihan ){
 
-                    // $total += pow($isi_ds[$pilihan] - $c[$pilihan], 2);
-
-                    echo $pilihan.'<br>';
+                    // echo "Nama variabel $pilihan dari nilai $isi_ds[$pilihan] dan $c[$pilihan]<br>";
+                    $x = (int) $isi_ds[$pilihan];
+                    $y = (int) $c[$pilihan];
+                    $total += pow($x - $y, 2);
                 }
-                // $dt_hasil_jarak[$pilihan] = sqrt( $total );
+
+
+                $akar = sqrt($total);
+                // echo "Hasil jarak ".sqrt($total)." <br>";
+
+                $dt_hasil_jarak[$index] = sqrt( $total );
             }   
 
-            
-            
+            $minimum = min( $dt_hasil_jarak );
             // print_r( $dt_hasil_jarak );
+            // echo "<br>";
+            // echo $minimum;
 
-            echo "<hr>";
+            $kluster = array_search($minimum, $dt_hasil_jarak);
+
+            array_push( $hasil_jarak, $dt_hasil_jarak );
+            array_push( $hasil_cluster, $kluster );
+
+            // echo "<br>";
+            // echo "centroid terletak pada $index";
+            // echo "<hr>";
+
+            // penentuan cluster baru 
+            if ( array_key_exists( $kluster, $data_centroid_baru ) ) {
+                // echo "untuk looping ke $index_ds ke $kluster ditemukan<br>";
+                foreach ( $dt_variabel_pilihan AS $pilihan ) {
+
+                    $data_centroid_baru[$kluster][$pilihan] += $isi_ds[$pilihan];
+                    // echo "&emsp; untuk $kluster dan $pilihan = ". $data_centroid_baru[$kluster][$pilihan] . " + ". $isi_ds[$kluster][$pilihan].'<br>';
+                }
+                $data_centroid_baru[$kluster]["count"]++;
+
+            } else {
+    
+                $data_centroid_baru[$kluster] = $isi_ds;
+                $data_centroid_baru[$kluster]["count"] = 1;
+                // echo "untuk looping ke $index_ds ke $kluster tidak ditemukan<br>";
+                // echo "&emsp; berarti time bernilai". $data_centroid_baru[$kluster]['time']." wr ". $data_centroid_baru[$kluster]['salah_wr'];
+            }
+
+            // echo "<br>";
+            
+            // print_r( $dt_centroid[$kluster] );
+            // $data_centroid_baru[$kluster] = $dt_centroid[$kluster];
+            // echo "<br>";
         }
 
 
-        echo json_encode( $dataset_filtered );
+        // jumlahkan keseluruhan centroid baru
+        $dt_centroid_terkini = [];
+        foreach ( $data_centroid_baru AS $index => $isi ) {
+
+            // print_r( $isi );
+            echo "<h2>Hasil index ke - $index</h2>";
+            foreach ( $dt_variabel_pilihan AS $pilihan ) {
+
+                $hasil = 0;
+
+                try {
+
+                    $hasil = $data_centroid_baru[$index][$pilihan] / $isi['count'];
+
+                } catch ( Exception $e ) {
+
+                    // zero divide 
+                }
+
+                // echo "<h2>Untuk index ke-$index : $hasil</h2>";
+                echo $hasil.'<br>';
+                // $dt_centroid_terkini[$index][$pilihan] = $hasil;
+            }
+        }
+
+        // echo json_encode($dt_centroid_terkini);
+
+
+
+        
+
+
+
+        // foreach ( $data_centroid_baru AS $isi ) {
+
+        //     print_r( $isi );
+        //     echo "<hr>";
+        // }
+
+
+        // echo json_encode( $dataset_filtered );
     }
 
 
