@@ -6,8 +6,289 @@ use Illuminate\Http\Request;
 
 class Kmeans extends Controller
 {
-    //
+
+
     function index() {
+
+        // menyiapkan variabel 
+        $dt_variabel = array(
+            'time', 'salah_gnd', 'salah_wr', 'jumlah_gnd_wr', 'nilai'
+        );
+
+
+        // inputan user
+        $dt_variabel_pilihan = ['time', 'salah_wr', 'salah_gnd', 'nilai'];
+        $memilih_kelas = ['2I', '2G'];
+        $dt_ids = [2, 7, 17];
+
+
+        $datasets = $this->dataset();
+
+
+        // filter mahasiswa berdasarkan kelas 
+        $dataset_filtered = array();
+        $dt_centroid = array();
+        foreach ( $datasets AS $isi ) {
+
+
+            // ambil centroid 
+            foreach ( $dt_ids AS $id ) {
+
+                if ( $id == $isi['id'] ) {
+
+                    array_push( $dt_centroid, $isi );
+                    break;
+                }
+            }
+
+            // filter kelas
+            foreach ( $memilih_kelas AS $filter_kelas ) {
+
+                if ( $filter_kelas == $isi['kelas'] ) {
+
+                    array_push( $dataset_filtered, $isi );
+                    break;
+                }
+            }
+
+
+            // iterasi 1 : 
+            // reno | 2I
+            // $isi['nama'] = reno 
+            // $isi['kelas'] = 2I 
+            //     // iterasi 1.1. 
+            //     filter_kelas = 2I 
+            //     apakah filter_kelas == $isi['kelas']
+            //     apakah 2I == 2I ? 
+            //     array_push : masuk filtering .. 
+
+            //     // iterasi 1.2 x
+
+            // // iterasi 2 : 
+            // versa : 2I 
+            //     // iterasi 2.1 
+            //     filter_kelas = 2I 
+            //     filter_kelas == $isi['kelas'] ? 
+            //     iya break 
+
+
+
+        }
+
+
+
+
+
+        // proses perhitungan 
+        foreach ( $dataset_filtered AS $isi_ds ) {
+
+
+            // jarak antara value per mhs dengan centroid
+            $dt_hasil_jarak = array();
+            echo $isi_ds['nama'].'<br>';
+
+            foreach ( $dt_centroid AS $c ) {
+                
+                $total = 0;
+                // seleksi variabel yang dihitung
+                foreach ( $dt_variabel_pilihan AS $pilihan ){
+
+                    // $total += pow($isi_ds[$pilihan] - $c[$pilihan], 2);
+
+                    echo $pilihan.'<br>';
+                }
+                // $dt_hasil_jarak[$pilihan] = sqrt( $total );
+            }   
+
+            
+            
+            // print_r( $dt_hasil_jarak );
+
+            echo "<hr>";
+        }
+
+
+        echo json_encode( $dataset_filtered );
+    }
+
+
+
+    // dataset 
+    function dataset() {
+
+        $dt_dataset = array(
+
+            [
+                'nama'  => "rheno",
+                'kelas' => "2I",
+                'time'  => "39",
+                'salah_wr'   => "2",
+                'salah_gnd'   => "1",
+                'nilai'       => "90"
+            ],
+            [
+                'nama'  => "versacitta",
+                'kelas' => "2G",
+                'time'  => "43",
+                'salah_wr'   => "10",
+                'salah_gnd'   => "14",
+                'nilai'       => "70"
+            ],
+            [
+                'nama'  => "keith",
+                'kelas' => "2I",
+                'time'  => "16",
+                'salah_wr'   => "0",
+                'salah_gnd'   => "0",
+                'nilai'       => "50"
+            ],
+            [
+                'nama'  => "abi",
+                'kelas' => "2I",
+                'time'  => "2",
+                'salah_wr'   => "0",
+                'salah_gnd'   => "0",
+                'nilai'       => "50"
+            ],
+            [
+                'nama'  => "raynor",
+                'kelas' => "2I",
+                'time'  => "37",
+                'salah_wr'   => "2",
+                'salah_gnd'   => "1",
+                'nilai'       => "50"
+            ],
+            [
+                'nama'  => "mayfana",
+                'kelas' => "2I",
+                'time'  => "21",
+                'salah_wr'   => "2",
+                'salah_gnd'   => "4",
+                'nilai'       => "80"
+            ],
+            [
+                'nama'  => "septian",
+                'kelas' => "2I",
+                'time'  => "17",
+                'salah_wr'   => "1",
+                'salah_gnd'   => "0",
+                'nilai'       => "80"
+            ],
+            [
+                'nama'  => "adinda",
+                'kelas' => "2I",
+                'time'  => "44",
+                'salah_wr'   => "0",
+                'salah_gnd'   => "0",
+                'nilai'       => "60"
+            ],
+            [
+                'nama'  => "raihan",
+                'kelas' => "2I",
+                'time'  => "39",
+                'salah_wr'   => "1",
+                'salah_gnd'   => "3",
+                'nilai'       => "70"
+            ],
+            [
+                'nama'  => "vinsensius",
+                'kelas' => "2I",
+                'time'  => "45",
+                'salah_wr'   => "5",
+                'salah_gnd'   => "4",
+                'nilai'       => "30"
+            ],
+            [
+                'nama'  => "rheno",
+                'kelas' => "2I",
+                'time'  => "39",
+                'salah_wr'   => "2",
+                'salah_gnd'   => "1",
+                'nilai'       => "70"
+            ],
+            [
+                'nama'  => "thoriq",
+                'kelas' => "2I",
+                'time'  => "21",
+                'salah_wr'   => "2",
+                'salah_gnd'   => "3",
+                'nilai'       => "80"
+            ],
+            [
+                'nama'  => "saefulloh",
+                'kelas' => "2I",
+                'time'  => "29",
+                'salah_wr'   => "12",
+                'salah_gnd'   => "7",
+                'nilai'       => "50"
+            ],
+            [
+                'nama'  => "mumtaz",
+                'kelas' => "2I",
+                'time'  => "28",
+                'salah_wr'   => "8",
+                'salah_gnd'   => "9",
+                'nilai'       => "0"
+            ],
+            [
+                'nama'  => "khafillah",
+                'kelas' => "2I",
+                'time'  => "44",
+                'salah_wr'   => "0",
+                'salah_gnd'   => "0",
+                'nilai'       => "90"
+            ],
+            [
+                'nama'  => "ghaitza",
+                'kelas' => "2I",
+                'time'  => "18",
+                'salah_wr'   => "14",
+                'salah_gnd'   => "11",
+                'nilai'       => "40"
+            ],
+            [
+                'nama'  => "satria",
+                'kelas' => "2I",
+                'time'  => "24",
+                'salah_wr'   => "8",
+                'salah_gnd'   => "7",
+                'nilai'       => "50"
+            ],
+            [
+                'nama'  => "faricha",
+                'kelas' => "2I",
+                'time'  => "25",
+                'salah_wr'   => "1",
+                'salah_gnd'   => "1",
+                'nilai'       => "50"
+            ],
+            [
+                'nama'  => "faizal",
+                'kelas' => "2I",
+                'time'  => "26",
+                'salah_wr'   => "14",
+                'salah_gnd'   => "16",
+                'nilai'       => "60"
+            ],
+        );
+
+        $perbarui_dataset_id = array();
+        foreach ( $dt_dataset AS $index => $isi) {
+
+            $isi['id'] = $index + 1;
+            $isi['jumlah_gnd_wr'] = $isi['salah_wr'] + $isi['salah_gnd'];
+            array_push( $perbarui_dataset_id, $isi );
+        }
+
+        return $perbarui_dataset_id;
+    }
+
+
+
+
+
+    //
+    function index_b() {
 
         /**
          *  1. Menyiapkan dataset
