@@ -23,8 +23,12 @@ class Kmeans extends Controller
         $dt_ids = [2, 7, 17];
 
 
+        // init awal
         $datasets = $this->dataset();
+        $iterasi = 0;
+        $arr_hasil_iterasi_keseluruhan = array();
 
+        
 
         // filter mahasiswa berdasarkan kelas 
         $dataset_filtered = array();
@@ -154,7 +158,7 @@ class Kmeans extends Controller
         foreach ( $data_centroid_baru AS $index => $isi ) {
 
             // print_r( $isi );
-            echo "<h2>Hasil index ke - $index</h2>";
+            // echo "<h2>Hasil index ke - $index</h2>";
             foreach ( $dt_variabel_pilihan AS $pilihan ) {
 
                 $hasil = 0;
@@ -169,27 +173,174 @@ class Kmeans extends Controller
                 }
 
                 // echo "<h2>Untuk index ke-$index : $hasil</h2>";
-                echo $hasil.'<br>';
-                // $dt_centroid_terkini[$index][$pilihan] = $hasil;
+
+                // array_push( $dt_centroid_terkini, $hasil );
+                // echo $hasil.'<br>';
+                $dt_centroid_terkini[$index][$pilihan] = $hasil;
             }
         }
 
-        // echo json_encode($dt_centroid_terkini);
 
 
-
+        // header('Content-Type: application/json');
+        ksort($dt_centroid_terkini);
         
+        
+        // increment 
+        $hasil_iterasi = array(
+
+            'data'              => $dataset_filtered,
+            'centroid_awal'     => $dt_centroid,
+            'jarak'             => $hasil_jarak,
+            'hasil_klusterisasi'=> $hasil_cluster,
+            'tabel_klusterisasi'=> $data_centroid_baru,
+            'centroid_baru'     => $dt_centroid_terkini
+        );
+        $iterasi++;
 
 
+        array_push( $arr_hasil_iterasi_keseluruhan, $hasil_iterasi );
 
-        // foreach ( $data_centroid_baru AS $isi ) {
-
-        //     print_r( $isi );
-        //     echo "<hr>";
-        // }
+        // echo json_encode($hasil_iterasi);
+        // echo "<hr>";
 
 
-        // echo json_encode( $dataset_filtered );
+        // proses perhitungan
+        
+        do {
+
+            $urutan = 1;
+            // ------------- perhitungan iterasi -------------
+
+            // proses perhitungan 
+            $iter_hasil_cluster = [];
+            $iter_hasil_jarak = [];
+            $iter_data_centroid_baru = [];
+            foreach ( $hasil_iterasi['data'] AS $index_ds => $isi_ds ) {
+
+                // jarak antara value per mhs dengan centroid
+                $iter_dt_hasil_jarak = array();
+                // echo $isi_ds['nama'].'<br>';
+
+                foreach ( $hasil_iterasi['centroid_baru'] AS $index => $c ) {
+                    
+                    $total = 0;
+                    // seleksi variabel yang dihitung
+                    foreach ( $dt_variabel_pilihan AS $pilihan ){
+
+                        // echo "Nama variabel $pilihan dari nilai $isi_ds[$pilihan] dan $c[$pilihan]<br>";
+                        $x = (int) $isi_ds[$pilihan];
+                        $y = (int) $c[$pilihan];
+                        $total += pow($x - $y, 2);
+                    }
+
+
+                    $akar = sqrt($total);
+                    // echo "Hasil jarak ".sqrt($total)." <br>";
+
+                    $iter_dt_hasil_jarak[$index] = sqrt( $total );
+                }   
+
+                $minimum = min( $iter_dt_hasil_jarak );
+                // print_r( $dt_hasil_jarak );
+                // echo "<br>";
+                // echo $minimum;
+
+                $kluster = array_search($minimum, $iter_dt_hasil_jarak);
+
+                array_push( $iter_hasil_jarak, $iter_dt_hasil_jarak );
+                array_push( $iter_hasil_cluster, $kluster );
+
+                // echo "<br>";
+                // echo "centroid terletak pada $index";
+                // echo "<hr>";
+
+                // penentuan cluster baru 
+                if ( array_key_exists( $kluster, $iter_data_centroid_baru ) ) {
+                    // echo "untuk looping ke $index_ds ke $kluster ditemukan<br>";
+                    foreach ( $dt_variabel_pilihan AS $pilihan ) {
+
+                        $iter_data_centroid_baru[$kluster][$pilihan] += $isi_ds[$pilihan];
+                        // echo "&emsp; untuk $kluster dan $pilihan = ". $data_centroid_baru[$kluster][$pilihan] . " + ". $isi_ds[$kluster][$pilihan].'<br>';
+                    }
+                    $iter_data_centroid_baru[$kluster]["count"]++;
+
+                } else {
+        
+                    $iter_data_centroid_baru[$kluster] = $isi_ds;
+                    $iter_data_centroid_baru[$kluster]["count"] = 1;
+                    // echo "untuk looping ke $index_ds ke $kluster tidak ditemukan<br>";
+                    // echo "&emsp; berarti time bernilai". $data_centroid_baru[$kluster]['time']." wr ". $data_centroid_baru[$kluster]['salah_wr'];
+                }
+
+                
+            }
+
+
+            // jumlahkan keseluruhan centroid baru
+            $iter_dt_centroid_terkini = [];
+            foreach ( $iter_data_centroid_baru AS $index => $isi ) {
+
+                // print_r( $isi );
+                // echo "<h2>Hasil index ke - $index</h2>";
+                foreach ( $dt_variabel_pilihan AS $pilihan ) {
+
+                    $hasil = 0;
+
+                    try {
+
+                        $hasil = $iter_data_centroid_baru[$index][$pilihan] / $isi['count'];
+
+                    } catch ( Exception $e ) {
+
+                        // zero divide 
+                    }
+                    $iter_dt_centroid_terkini[$index][$pilihan] = $hasil;
+                }
+            }
+
+            ksort($iter_dt_centroid_terkini);
+            
+            // cek galat 
+            $status_galat = false;
+            foreach ( $iter_hasil_cluster AS $index => $isi ) {
+
+                if ( $isi != $hasil_iterasi['hasil_klusterisasi'][$index]) {
+
+                    $status_galat = true;
+                    break;
+                }
+            }
+
+
+            // cek galat
+            if ( $status_galat == false ) {
+                
+                $iterasi = 0; // break iterasi
+            }
+
+
+            $urutan++;
+
+            // echo $urutan.'<br>';
+
+            $iter_hasil_iterasi = array(
+
+                'data'              => $dataset_filtered,
+                'centroid_awal'     => $dt_centroid,
+                'jarak'             => $iter_hasil_jarak,
+                'hasil_klusterisasi'=> $iter_hasil_cluster,
+                'tabel_klusterisasi'=> $iter_data_centroid_baru,
+                'centroid_baru'     => $iter_dt_centroid_terkini
+            );
+
+            array_push( $arr_hasil_iterasi_keseluruhan, $iter_hasil_iterasi );
+            
+        } while ( $iterasi != 0 );
+
+
+        echo json_encode($arr_hasil_iterasi_keseluruhan);
+
     }
 
 
