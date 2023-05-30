@@ -45,7 +45,9 @@ Route::resource('dosen', DosenController::class);
 
 //Klusterisasi
 Route::resource('perhitungan', KlusterisasiController::class);
-
+Route::get('/hasil', function () {
+    return view('klasterisasi/hasilperhitungan');
+});
 //Laporan
 Route::resource('laporan', LaporanController::class);
 
