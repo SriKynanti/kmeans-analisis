@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KlusterisasiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Kmeans;
@@ -41,6 +42,9 @@ Route::resource('dataset', DatasetController::class);
 
 //Dosen
 Route::resource('dosen', DosenController::class);
+
+//Klusterisasi
+Route::resource('perhitungan', KlusterisasiController::class);
 
 //Laporan
 Route::resource('laporan', LaporanController::class);

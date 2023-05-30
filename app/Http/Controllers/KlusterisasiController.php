@@ -13,7 +13,7 @@ class KlusterisasiController extends Controller
      */
     public function index()
     {
-        //
+        return view('klasterisasi/perhitungan');
     }
 
     /**

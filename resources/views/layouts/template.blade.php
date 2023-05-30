@@ -58,6 +58,18 @@
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
 
+  <!-- Bootstrap Multiselect CSS -->
+  <link rel="stylesheet" href="css/bootstrap-multiselect.css">
+
+  <!-- Bootstrap Multiselect JS -->
+  <script data-main="dist/js/" src="js/require.min.js"></script>
+
+  <script>
+    require(['bootstrap-multiselect'], function(purchase) {
+      $('#mySelect').multiselect();
+    });
+  </script>
+
 </body>
 
 </html>

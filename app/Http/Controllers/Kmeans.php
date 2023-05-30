@@ -9,7 +9,7 @@ class Kmeans extends Controller
 {
 
 
-    function index() {
+    function index() { 
 
         // menyiapkan variabel 
         $dt_variabel = array(
@@ -18,7 +18,7 @@ class Kmeans extends Controller
 
 
         // inputan user
-        $dt_variabel_pilihan = ['time', 'salah_wr', 'salah_gnd', 'nilai'];
+        $dt_variabel_pilihan = ['time', 'jumlah_gnd_wr', 'nilai'];
         $memilih_kelas = ['2I', '2G'];
         $dt_ids = [2, 7, 17];
 
@@ -339,7 +339,14 @@ class Kmeans extends Controller
         } while ( $iterasi != 0 );
 
 
-        echo json_encode($arr_hasil_iterasi_keseluruhan);
+        foreach ( $arr_hasil_iterasi_keseluruhan AS $index => $isi ){
+
+            echo "<h2>$index</h2>";
+            echo json_encode( $isi );
+
+            echo "<hr>";
+        }
+        // echo json_encode($arr_hasil_iterasi_keseluruhan);
 
     }
 
