@@ -16,60 +16,90 @@
 
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">General Form Elements</h5>
+        <h5 class="card-title">Form Opsi Dataset</h5>
 
         <!-- General Form Elements -->
-        <form class="row g-3">
+        <form class="row g-3" method="GET">
           <div class="row mb-3">
             <legend class="col-form-label">Pilih Variabel: </legend>
             <div class="col-sm-10">
 
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="gridCheck1">
-                <label class="form-check-label" for="gridCheck1">
+                @php 
+
+                  $statusCheckbox = array(
+
+                    'time'        => '',
+                    'salah_gnd'   => '',
+                    'salah_wr'    => '',
+                    'jumlah_gnd_wr'=> '',
+                    'nilai'        => ''
+                  );
+                  if ( $res->filled('v') ) {
+
+                    foreach ( $res->v AS $variab ) {
+
+                      $statusCheckbox[$variab] = 'checked';
+                    }
+                  }
+
+                @endphp 
+                <input class="form-check-input" type="checkbox" name="v[]" value="time" id="1" {{ $statusCheckbox['time'] }}>
+                <label class="form-check-label" for="1">
                   Waktu
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="gridCheck2">
-                <label class="form-check-label" for="gridCheck2">
+                <input class="form-check-input" type="checkbox" name="v[]" value="salah_gnd" id="2" {{ $statusCheckbox['salah_gnd'] }}>
+                <label class="form-check-label" for="2">
                   Ground False
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="gridCheck2">
-                <label class="form-check-label" for="gridCheck2">
+                <input class="form-check-input" type="checkbox" name="v[]" value="salah_wr" id="3" {{ $statusCheckbox['salah_wr'] }}>
+                <label class="form-check-label" for="3">
                   Warrant False
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="gridCheck2">
-                <label class="form-check-label" for="gridCheck2">
+                <input class="form-check-input" type="checkbox" name="v[]" value="jumlah_gnd_wr" id="4" {{ $statusCheckbox['jumlah_gnd_wr'] }}>
+                <label class="form-check-label" for="4">
                   Kesalahan Keduanya
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="gridCheck2">
-                <label class="form-check-label" for="gridCheck2">
+                <input class="form-check-input" type="checkbox" name="v[]" value="nilai" id="5" {{ $statusCheckbox['nilai'] }}>
+                <label class="form-check-label" for="5">
                   Nilai
                 </label>
               </div>
 
             </div>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-11">
             <legend class="col-form-label">Pilih Kelas:</legend>
-            <select id="mySelect" multiple="multiple">
-              <option value="Option one">2G</option>
-              <option value="Option two">2H</option>
-              <option value="Option three">2I</option>
+            <select multiple name="kelas[]" id="shapes" required="">
+              @foreach ( $dt_kelas AS $isi ) 
+                @php 
+                  $status = "";
+                  if ( $res->filled('kelas') ) {
+                    foreach ( $res->kelas AS $isi_det ) {
+                      if ( $isi->kelas == $isi_det ) {
+                        $status = 'selected="selected"';
+                        break;
+                      }
+                    }
+                  }
+                @endphp 
+                <option value="{{ $isi->kelas }}" {{ $status }}>{{ $isi->kelas }}</option>
+              @endforeach 
             </select>
-            </select>
+            <small>Pilih kelas diatas</small>
           </div>
-          <div></div>
-          <div class="row mb-4">
-            <div class="col-sm-10">
-              <button type="submit" class="btn btn-primary">Submit</button>
+          
+          <div class="row" style="margin-top: 20px">
+            <div class="col-sm-12">
+              <button type="submit" class="btn btn-block btn-sm btn-primary">Proses Mahasiswa</button>
             </div>
           </div>
 
@@ -90,48 +120,25 @@
           <thead>
             <tr>
               <th scope="col">#</th>
+              <th scope="col">Nomor Induk</th>
               <th scope="col">Nama</th>
               <th scope="col">Kelas</th>
-              <th scope="col">Waktu</th>
               <th scope="col">Nilai</th>
             </tr>
           </thead>
           <tbody>
+            @foreach ( $dt_mahasiswa AS $index => $isi )
             <tr>
-              <th scope="row">1</th>
-              <td>Brandon Jacob</td>
-              <td>Designer</td>
-              <td>28</td>
-              <td>2016-05-25</td>
+              <td>
+                <input type="checkbox" name="ids[]" >
+              </td>
+              <th scope="row">{{ $index + 1 }}</th>
+              <td>{{ $isi->nomor_induk }}</td>
+              <td>{{ $isi->nama }}</td>
+              <td>{{ $isi->level }}</td>
+              <td>-</td>
             </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Bridie Kessler</td>
-              <td>Developer</td>
-              <td>35</td>
-              <td>2014-12-05</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Ashleigh Langosh</td>
-              <td>Finance</td>
-              <td>45</td>
-              <td>2011-08-12</td>
-            </tr>
-            <tr>
-              <th scope="row">4</th>
-              <td>Angus Grady</td>
-              <td>HR</td>
-              <td>34</td>
-              <td>2012-06-11</td>
-            </tr>
-            <tr>
-              <th scope="row">5</th>
-              <td>Raheem Lehner</td>
-              <td>Dynamic Division Officer</td>
-              <td>47</td>
-              <td>2011-04-19</td>
-            </tr>
+            @endforeach 
           </tbody>
         </table>
         <!-- End Table with stripped rows -->

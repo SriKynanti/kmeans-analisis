@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class KlusterisasiController extends Controller
 {
@@ -11,9 +12,56 @@ class KlusterisasiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $res )
     {
-        return view('klasterisasi/perhitungan');
+
+        $dt_kelas = array();
+        $dt_mahasiswa = array();
+        
+        $base_url = config('app.base_url');
+        $url = $base_url . 'API/get_class.php';
+
+        $request = file_get_contents($url);
+        $response = json_decode( $request );
+        if ( $response->status == 200 ) {
+
+            foreach ( $response->result AS $isi ) {
+
+                array_push( $dt_kelas, $isi );
+            }
+        }
+
+
+        // apabila sudah melakukan filter
+        if ( $res->filled('v') ){
+
+            $base_url = config('app.base_url');
+            $url = $base_url . 'API/get_mahasiswa.php';
+
+            $request = file_get_contents($url);
+            $response = json_decode( $request );
+
+            
+            if ( $response->status == 200 ) {
+                foreach ( $response->result AS $isi ) {
+
+                    foreach ( $res->kelas AS $filt_kelas )  {
+
+                        if ( $filt_kelas == $isi->level ) {
+
+                            array_push( $dt_mahasiswa, $isi );
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // print_r( $dt_mahasiswa );
+
+
+        // echo 
+        return view('klasterisasi/perhitungan', compact('dt_kelas', 'res', 'dt_mahasiswa'));
     }
 
     /**

@@ -29,6 +29,9 @@
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
+  <link rel="stylesheet" href="{{ asset('assets/plugins/multiple-select/filter_multi_select.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
 </head>
 
 <body>
@@ -45,6 +48,10 @@
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
+  <script
+  src="https://code.jquery.com/jquery-3.7.0.js"
+  integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+  crossorigin="anonymous"></script>
   <!-- Vendor JS Files -->
   <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -58,15 +65,21 @@
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
 
-  <!-- Bootstrap Multiselect CSS -->
-  <link rel="stylesheet" href="css/bootstrap-multiselect.css">
 
-  <!-- Bootstrap Multiselect JS -->
-  <script data-main="dist/js/" src="js/require.min.js"></script>
+
+  <script src="{{ asset('assets/plugins/multiple-select/filter-multi-select-bundle.min.js') }}"></script>
 
   <script>
-    require(['bootstrap-multiselect'], function(purchase) {
-      $('#mySelect').multiselect();
+
+    $(function() {
+
+      $('#shapes').filterMultiSelect({
+          selectAllText: 'Semua Kelas',
+          placeholderText: 'click to select a shape',
+          filterText: 'search',
+          labelText: 'Kelas',
+          caseSensitive: true,
+      });
     });
   </script>
 
