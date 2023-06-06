@@ -4,12 +4,64 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Kmeans extends Controller
 {
 
+    function hitung_manual( Request $request ) {
 
-    function index() { 
+        $dt_variabel_pilihan = array();
+
+        $ids = [];
+        $kelas = [];
+        $variabel = [];
+
+        // memastikan sudah memilih mhs
+        if ( $request->filled('email') && count($request->email) > 0 )  {
+
+            foreach ( $request->email AS $isi ) {
+
+               
+                $url = config('app.base_url') . 'API/get_mahasiswa.php?email='.$isi;
+                $permintaan = file_get_contents($url);
+
+                $decoding = json_decode( $permintaan );
+
+                if ( $decoding->status == 200 ) {
+
+                    $user = $decoding->result[0];
+                    array_push( $ids, $user->id_user );
+                }
+            }
+        }
+
+        // ambil kelas 
+        if ( $request->filled('kelas') ) {
+
+            $kelas = explode(',', $request->kelas);
+        }
+
+        // ambil variabel 
+        if ( $request->filled('v') ) {
+
+            $variabel = explode(',', $request->v);
+        }
+
+
+        if ( count( $ids ) > 0 && count($kelas) > 0 && count($variabel) > 0 ) {
+
+            $this->hitung( $variabel, $ids, $kelas, $request->id_lesson );
+
+        } else {
+
+            echo "tidak dapat memproses, harap periksa form parameter anda";
+        }
+
+        
+    }
+
+    function hitung( $dt_variabel_pilihan, $dt_ids, $memilih_kelas, $id_lesson ) { 
 
         // menyiapkan variabel 
         $dt_variabel = array(
@@ -18,13 +70,13 @@ class Kmeans extends Controller
 
 
         // inputan user
-        $dt_variabel_pilihan = ['time', 'jumlah_gnd_wr', 'nilai'];
-        $memilih_kelas = ['2I', '2G'];
-        $dt_ids = [2, 7, 17];
+        // $dt_variabel_pilihan = ['time', 'jumlah_gnd_wr', 'nilai'];
+        // $memilih_kelas = ['2I', '2G'];
+        // $dt_ids = [2, 7, 17];
 
 
         // init awal
-        $datasets = $this->dataset();
+        $datasets = $this->dataset($id_lesson);
         $iterasi = 0;
         $arr_hasil_iterasi_keseluruhan = array();
 
@@ -35,10 +87,11 @@ class Kmeans extends Controller
         $dt_centroid = array();
         foreach ( $datasets AS $isi ) {
 
-
+            // echo "<h4>".$isi['id']."</h4>";
             // ambil centroid 
             foreach ( $dt_ids AS $id ) {
 
+                // echo $id.' '.$isi['id'].'<br>';
                 if ( $id == $isi['id'] ) {
 
                     array_push( $dt_centroid, $isi );
@@ -79,8 +132,6 @@ class Kmeans extends Controller
 
 
         }
-
-
 
 
 
@@ -206,7 +257,8 @@ class Kmeans extends Controller
 
 
         // proses perhitungan
-        
+
+
         do {
 
             $urutan = 1;
@@ -324,7 +376,7 @@ class Kmeans extends Controller
 
             // echo $urutan.'<br>';
 
-            $iter_hasil_iterasi = array(
+            $hasil_iterasi = array(
 
                 'data'              => $dataset_filtered,
                 'centroid_awal'     => $dt_centroid,
@@ -334,8 +386,9 @@ class Kmeans extends Controller
                 'centroid_baru'     => $iter_dt_centroid_terkini
             );
 
-            array_push( $arr_hasil_iterasi_keseluruhan, $iter_hasil_iterasi );
+            array_push( $arr_hasil_iterasi_keseluruhan, $hasil_iterasi );
             
+            // $iterasi = 0;
         } while ( $iterasi != 0 );
 
 
@@ -353,8 +406,135 @@ class Kmeans extends Controller
 
 
     // dataset 
-    function dataset() {
+    function dataset( $id_lesson ) {
 
+
+        // $id_lesson = "11";
+        // ambil dataset from log
+        $base_url = config('app.base_url');
+        $url = $base_url . 'API/get_mahasiswa.php';
+
+        $dt_dataset = array();
+        $dt_mahasiswa = array();
+
+        $request = file_get_contents($url);
+        $response = json_decode( $request );
+        if ( $response->status == 200 ) {
+
+            foreach ( $response->result AS $isi ) {
+
+                array_push( $dt_mahasiswa, $isi );
+            }
+        }
+
+
+
+        // looping data mhs
+        if ( count( $dt_mahasiswa ) > 0 ) {
+
+            foreach ( $dt_mahasiswa AS $isi ) {
+
+                if ( $isi->email ) {
+
+                    $base_url = config('app.base_url');
+                    $url = $base_url . 'API/get_log.php?email='.$isi->email.'&id_lesson='.$id_lesson;
+
+                    try{
+
+                        $request = file_get_contents($url);
+                        $response = json_decode( $request );
+
+
+                        // ambil informasi waktu
+                        $url_diff = $base_url . 'API/get_log_diff.php?email='.$isi->email.'&id_lesson='.$id_lesson;
+
+                        $request_diff = file_get_contents($url_diff);
+                        $response_diff = json_decode( $request_diff );
+
+                        
+                        // filter
+                        if ( $response->status == 200 && count($response->result) > 0 ) {
+
+                            $waktu = 0;
+                            if ( $response_diff->status == 200 && count($response_diff->result) > 0  ) {
+
+                                $waktu = $response_diff->result[0]->difference;
+                            }
+
+
+                            // add response dataaset
+                            $response->waktu = $waktu;
+
+                            array_push( $dt_dataset, $response );
+                        }
+
+                    } catch( Exception $e ) {
+
+                        // echo "error";
+                    }
+                }
+
+                
+            }
+        }
+
+
+
+        // check 
+        $dataset_cleaning = array();
+        // echo count($dt_dataset);
+        if ( count( $dt_dataset ) > 0 ){
+
+            foreach ( $dt_dataset AS $isi ) {
+
+                // jumlah 
+                $w_jawaban_2 = 0;
+                $w_jawaban_3 = 0;
+
+                $g_jawaban_2 = 0;
+                $g_jawaban_3 = 0;
+                
+                $name = "";
+                $kelas = "";
+                $id = "";
+                foreach ( $isi->result AS $mhs ) {
+
+                    $w_jawaban_2 += $mhs->W_Jawaban2;
+                    $w_jawaban_3 += $mhs->W_Jawaban3;
+                    $g_jawaban_2 += $mhs->G_Jawaban2;
+                    $g_jawaban_3 += $mhs->G_Jawaban2;
+
+                    $name = $mhs->nama;
+                    $kelas = $mhs->level;
+                    $id = $mhs->id_user;
+                }
+
+                // tambah
+                $salah_wr  = $w_jawaban_2 + $w_jawaban_3;
+                $salah_gnd = $g_jawaban_2 + $g_jawaban_3;
+                $jumlah_gnd_wr = $salah_wr + $salah_gnd;
+                $nilai = 0;
+                $time = $isi->waktu;
+
+                array_push( $dataset_cleaning, [
+
+                    'id'    => $id,
+                    'nama'  => $name,
+                    'kelas' => $kelas,
+                    'time'  => $time,
+                    'salah_wr'   => $salah_wr,
+                    'salah_gnd'     => $salah_gnd,
+                    'jumlah_gnd_wr' => $jumlah_gnd_wr,
+                    'nilai'       => $nilai
+                ]);
+            }
+        }
+
+
+
+        return $dataset_cleaning;
+
+        /*
         $dt_dataset = array(
 
             [
@@ -520,6 +700,7 @@ class Kmeans extends Controller
         }
 
         return $perbarui_dataset_id;
+        */
     }
 
 

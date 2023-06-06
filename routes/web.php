@@ -59,3 +59,8 @@ Route::get("/pw", function() {
 
 
 Route::get("/hitung", [Kmeans::class, 'index']);
+Route::post('/kmeans/manual', [Kmeans::class, 'hitung_manual'])->name('kynan');
+
+
+
+Route::get('/dataset', [Kmeans::class,'dataset']);

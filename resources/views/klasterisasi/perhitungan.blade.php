@@ -91,10 +91,23 @@
                     }
                   }
                 @endphp 
+                @if ( !empty( $isi->kelas ) )
                 <option value="{{ $isi->kelas }}" {{ $status }}>{{ $isi->kelas }}</option>
+                @endif
               @endforeach 
             </select>
             <small>Pilih kelas diatas</small>
+          </div>
+
+          <div class="col-md-11">
+            <div class="form-group">
+              <label for="">Lessons</label>
+              <select name="id_lesson" class="form-control" id="">
+                @foreach ( $dt_lessons AS $isi )
+                <option value="{{ $isi->id_lesson }}">{{ $isi->nama_lesson }}</option>
+                @endforeach 
+              </select>
+            </div>
           </div>
           
           <div class="row" style="margin-top: 20px">
@@ -112,31 +125,52 @@
 
   <div class="col-xl-8">
 
+
+    <form action="{{ url('kmeans/manual') }}" method="post">
+    
+    @csrf
+    @if ( $res->filled('v') && $res->filled('kelas') )
+    <input type="hidden" name="id_lesson" value="{{ $res->id_lesson }}">
+    <input type="hidden" name="kelas" value="{{ implode(',', $res->kelas) }}">
+    <input type="hidden" name="v" value="{{ implode(',', $res->v) }}">
+    @endif
+    
+    
+
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Data Set</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <h5 class="card-title">Data Set</h5>
+          </div>
+          <div class="col-md-6 text-right">
+            <div>
+              <a href="" class="btn btn-info btn-sm">Centroid Random</a>
+              <button type="submit" class="btn btn-warning btn-sm">Proses Hitung</button><br>
+              <small>Klik untuk memproses perhitungan </small>
+            </div>
+          </div>
+        </div>
+        
         <!-- Table with stripped rows -->
-        <table class="table datatable">
+        <table class="table datatable-bug">
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Nomor Induk</th>
               <th scope="col">Nama</th>
               <th scope="col">Kelas</th>
-              <th scope="col">Nilai</th>
+              <th scope="col">Time</th>
             </tr>
           </thead>
           <tbody>
             @foreach ( $dt_mahasiswa AS $index => $isi )
             <tr>
               <td>
-                <input type="checkbox" name="ids[]" >
+                <input type="checkbox" name="email[]" value="{{ $isi['email'] }}">
               </td>
-              <th scope="row">{{ $index + 1 }}</th>
-              <td>{{ $isi->nomor_induk }}</td>
-              <td>{{ $isi->nama }}</td>
-              <td>{{ $isi->level }}</td>
-              <td>-</td>
+              <td>{{ $isi['nama'] }}</td>
+              <td>{{ $isi['kelas'] }}</td>
+              <td>{{ $isi['time'] }}</td>
             </tr>
             @endforeach 
           </tbody>
@@ -145,6 +179,8 @@
 
       </div>
     </div>
+
+    </form>
 
   </div>
 </div>
