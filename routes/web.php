@@ -8,6 +8,7 @@ use App\Http\Controllers\KlusterisasiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Kmeans;
+use App\Http\Controllers\NilaiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,10 @@ Route::resource('dataset', DatasetController::class);
 
 //Dosen
 Route::resource('dosen', DosenController::class);
+
+//Nilai
+Route::resource('nilai', NilaiController::class);
+Route::post('nilai/download_excel', [NilaiController::class, 'download_excel']);
 
 //Klusterisasi
 Route::resource('perhitungan', KlusterisasiController::class);

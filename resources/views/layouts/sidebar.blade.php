@@ -20,18 +20,13 @@
           <i class="bi bi-circle"></i><span>Data Set</span>
         </a>
       </li>
-      <li>
-        <a href="/dosen">
-          <i class="bi bi-circle"></i><span>Data Dosen</span>
-        </a>
-      </li>
     </ul>
   </li><!-- End Master Data Nav -->
 
   <li class="nav-item">
-    <a class="nav-link collapsed" href="/dataset">
-      <i class="bi bi-database"></i>
-      <span>Data Set</span>
+    <a class="nav-link collapsed" href="/nilai">
+      <i class="bi bi-file-earmark-binary"></i>
+      <span>Nilai Mahasiswa</span>
     </a>
   </li><!-- End Data Set Page Nav -->
 
