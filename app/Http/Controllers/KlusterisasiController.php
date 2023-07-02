@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 
 class KlusterisasiController extends Controller
 {
@@ -92,9 +93,63 @@ class KlusterisasiController extends Controller
     }
 
 
+    public function hasil() {
+
+        $perhitungan = DB::table("klusterisasi")->get();
+        return view('klasterisasi/hasilperhitungan', compact('perhitungan'));
+    }
 
 
+    // detail hasil
+    public function detail( $id ) {
 
+        // ambil data kluster berdasarkan id
+        $info = DB::table("klusterisasi")->where("id", $id)->first();
+        $base_url = config('app.base_url');
+
+        // data detail
+        $detail = array();
+        if ( $info ) {
+
+            $dt_lessons = array();
+
+            // parameter
+            $decode_parameter = json_decode( $info->dt_parameter );
+            $decode_perhitungan = json_decode($info->dt_perhitungan);
+            $decode_dataset = json_decode($info->dt_dataset);
+            
+            $kelas = $decode_parameter->kelas;
+            $pilihan = $decode_parameter->pilihan;
+            $id_lesson = $decode_parameter->id_lesson;
+
+            // ambil data lesson 
+            $url = $base_url . 'API/get_lesson.php?id_lesson='. $id_lesson;
+
+            $request = file_get_contents($url);
+            $response = json_decode( $request );
+            if ( $response->status == 200 ) {
+
+                foreach ( $response->result AS $isi ) {
+
+                    array_push( $dt_lessons, $isi );
+                }
+            }
+
+
+            $detail = array(
+
+                'dt_lessons'    => $dt_lessons,
+                'kelas'     => $kelas,
+                'pilihan'       => $pilihan,
+                'perhitungan'   => $decode_perhitungan
+            );
+        }
+
+
+        return view('klasterisasi/prosesperhitungan', compact('detail'));
+
+
+    }
 
 
     function dataset( $id_lesson ) {
