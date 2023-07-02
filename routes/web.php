@@ -66,6 +66,7 @@ Route::get("/pw", function() {
 
 Route::get("/hitung", [Kmeans::class, 'index']);
 Route::post('/kmeans/manual', [Kmeans::class, 'hitung_manual'])->name('kynan');
+Route::get('/kmeans/random', [Kmeans::class, 'hitung_random']);
 
 Route::get('/scatter-plot', [ScatterPlotController::class, 'index'])->name('scatter.plot');
 

@@ -41,7 +41,7 @@
         </a>
       </li>
       <li>
-        <a href="/history">
+        <a href="{{ url('hasil-kmeans') }}">
           <i class="bi bi-circle"></i><span>History</span>
         </a>
       </li>

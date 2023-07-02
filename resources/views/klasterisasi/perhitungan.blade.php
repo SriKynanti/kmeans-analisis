@@ -129,10 +129,41 @@
     <form action="{{ url('kmeans/manual') }}" method="post">
     
     @csrf
+
+
+    @php $url = ""; @endphp
     @if ( $res->filled('v') && $res->filled('kelas') )
     <input type="hidden" name="id_lesson" value="{{ $res->id_lesson }}">
     <input type="hidden" name="kelas" value="{{ implode(',', $res->kelas) }}">
     <input type="hidden" name="v" value="{{ implode(',', $res->v) }}">
+
+
+    @php 
+
+      $pil_kelas = implode(',', $res->kelas);
+      $pil_v = implode(',', $res->v);
+
+
+      // random value 
+      $persen = 10;
+      $jumlah = ceil(count($dt_mahasiswa) * ($persen / 100));
+
+      // pemilihan random id dataset 
+      $emails = [];
+
+      for ( $i = 0; $i < $jumlah; $i++ ) {
+
+        // random index
+        $rand_index = rand(0, 18);
+        array_push( $emails, $dt_mahasiswa[$rand_index]['email'] );
+      }
+
+
+
+      $url = "id_lesson=$res->id_lesson&kelas=$pil_kelas&v=$pil_v&email=". implode(",", $emails);
+
+    @endphp
+
     @endif
     
     
@@ -145,7 +176,7 @@
           </div>
           <div class="col-md-6 text-right">
             <div>
-              <a href="" class="btn btn-info btn-sm">Centroid Random</a>
+              <a href="{{ url('kmeans/random?'. $url ) }}" class="btn btn-info btn-sm">Centroid Random</a>
               <button type="submit" class="btn btn-warning btn-sm">Proses Hitung</button><br>
               <small>Klik untuk memproses perhitungan </small>
             </div>
@@ -160,6 +191,7 @@
               <th scope="col">Nama</th>
               <th scope="col">Kelas</th>
               <th scope="col">Time</th>
+              <th scope="col">Nilai</th>
             </tr>
           </thead>
           <tbody>
@@ -171,6 +203,7 @@
               <td>{{ $isi['nama'] }}</td>
               <td>{{ $isi['kelas'] }}</td>
               <td>{{ $isi['time'] }}</td>
+              <td>{{ $isi['nilai'] }}</td>
             </tr>
             @endforeach 
           </tbody>

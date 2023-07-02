@@ -73,6 +73,10 @@ class KlusterisasiController extends Controller
             // }
 
             $dataset = $this->dataset($res->id_lesson);
+
+            // ambil data nilai 
+
+
             foreach ( $dataset AS $isi ) {
 
                 foreach ( $res->kelas AS $filt_kelas )  {
@@ -261,7 +265,20 @@ class KlusterisasiController extends Controller
                 $salah_wr  = $w_jawaban_2 + $w_jawaban_3;
                 $salah_gnd = $g_jawaban_2 + $g_jawaban_3;
                 $jumlah_gnd_wr = $salah_wr + $salah_gnd;
+                
+
+
+
+                // cari data nilai berdasarkan nama mahasiswa
+                $cek_nilai = DB::table("nilai")->where("nama", $name)->get();
                 $nilai = 0;
+
+                if ( $cek_nilai->count() > 0 ) {
+
+                    $nilai = $cek_nilai[0]->post_test; // menggunakan post test
+                }
+
+                
                 $time = $isi->waktu;
 
                 array_push( $dataset_cleaning, [

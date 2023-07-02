@@ -51,7 +51,7 @@ class Kmeans extends Controller
 
         if ( count( $ids ) > 0 && count($kelas) > 0 && count($variabel) > 0 ) {
 
-            $this->hitung( $variabel, $ids, $kelas, $request->id_lesson );
+            $this->hitung( $variabel, $ids, $kelas, $request->id_lesson, "intuisi" );
             return redirect('hasil-kmeans');
             
         } else {
@@ -61,6 +61,63 @@ class Kmeans extends Controller
 
         
     }
+
+
+
+    function hitung_random( Request $request ) {
+
+        $dt_variabel_pilihan = array();
+        $ids = [];
+
+        $kelas = [];
+        $variabel = [];
+
+        // memastikan sudah memilih mhs
+        if ( $request->filled('email') )  {
+
+            $emails = explode(',', $request->email);
+
+            foreach ( $emails AS $isi ) {
+
+               
+                $url = config('app.base_url') . 'API/get_mahasiswa.php?email='.$isi;
+                $permintaan = file_get_contents($url);
+
+                $decoding = json_decode( $permintaan );
+
+                if ( $decoding->status == 200 ) {
+
+                    $user = $decoding->result[0];
+                    array_push( $ids, $user->id_user );
+                }
+            }
+        }
+
+        // ambil kelas 
+        if ( $request->filled('kelas') ) {
+
+            $kelas = explode(',', $request->kelas);
+        }
+
+        // ambil variabel 
+        if ( $request->filled('v') ) {
+
+            $variabel = explode(',', $request->v);
+        }
+
+
+        if ( count( $ids ) > 0 && count($kelas) > 0 && count($variabel) > 0 ) {
+
+            $this->hitung( $variabel, $ids, $kelas, $request->id_lesson );
+            return redirect('hasil-kmeans');
+            
+        } else {
+
+            echo "tidak dapat memproses, harap periksa form parameter anda";
+        }
+    }
+
+
 
     function hitung( $dt_variabel_pilihan, $dt_ids, $memilih_kelas, $id_lesson ) { 
 
@@ -507,7 +564,16 @@ class Kmeans extends Controller
                 $salah_wr  = $w_jawaban_2 + $w_jawaban_3;
                 $salah_gnd = $g_jawaban_2 + $g_jawaban_3;
                 $jumlah_gnd_wr = $salah_wr + $salah_gnd;
+                
+                // cari data nilai berdasarkan nama mahasiswa
+                $cek_nilai = DB::table("nilai")->where("nama", $name)->get();
                 $nilai = 0;
+                if ( $cek_nilai->count() > 0 ) {
+
+                    $nilai = $cek_nilai[0]->post_test; // menggunakan post test
+                }
+
+
                 $time = $isi->waktu;
 
                 array_push( $dataset_cleaning, [
