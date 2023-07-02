@@ -42,7 +42,7 @@
 
           <div class="d-flex">
             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-            <img src="assets/img/clustering.png" alt="">
+              <img src="assets/img/clustering.png" alt="">
             </div>
             <div class="ps-3">
               <h4>Fuzzy K-Means</h4>
@@ -50,11 +50,13 @@
               <div><span class="text-muted small pt-2 ps-1">Fuzzy k-means adalah variasi dari algoritma pengelompokan k-means tradisional yang memungkinkan tingkat ketidakpastian atau "kekaburan" dalam penugasan poin data ke cluster. Setiap iterasi dalam FKM clustering juga diawali dengan menghitung jarak setiap sampel data untuk setiap centroid (Hot, E., & Popović-Bugarin, V. (2016))</span></div>
             </div>
           </div>
+          <div class="col-sm-3">
+            <a class="btn btn-primary btn-sm" href="/perhitungan" role="button">Try Calculations</a>
+          </div>
         </div>
-
       </div>
     </div><!-- End Fuzzy K-Means -->
-    
+
     <!-- K Means -->
     <div class="col-xxl-4 col-md-6">
       <div class="card info-card sales-card">
@@ -64,18 +66,20 @@
 
           <div class="d-flex">
             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-            <img src="assets/img/clustering.png" alt="">
+              <img src="assets/img/clustering.png" alt="">
             </div>
             <div class="ps-3">
               <h4>K-Means</h4>
               <span class="font-italic small pt-2 ps-1">K-means is an unsupervised grouping method that groups data into coherent groups (Abdallah Moubayed, 2020).The K-Means method divides the data into several groups (clusters) where later these data groups have the same characteristics into the same cluster and different data groups will be grouped into other clusters (Indah Purnama Sari, 2021).</span>
-              <div><span class="text-muted small pt-2 ps-1">K-means merupakan salah satu metode pengelompokan unsupervised yang melakukan pengelompokan data ke dalam kelompok yang koheren(Abdallah Moubayed, 2020). 
-                Metode K-Means membagi data menjadi beberapa kelompok-kelompok (cluster) dimana nanti kelompok data-data tersebut memiliki karakteristik yang sama ke dalam cluster yang sama dan kelompok data yang berbeda akan dikelompokkan pada cluster yang lain(Indah Purnama 
-                Sari, 2021).</span></div>
+              <div><span class="text-muted small pt-2 ps-1">K-means merupakan salah satu metode pengelompokan unsupervised yang melakukan pengelompokan data ke dalam kelompok yang koheren(Abdallah Moubayed, 2020).
+                  Metode K-Means membagi data menjadi beberapa kelompok-kelompok (cluster) dimana nanti kelompok data-data tersebut memiliki karakteristik yang sama ke dalam cluster yang sama dan kelompok data yang berbeda akan dikelompokkan pada cluster yang lain(Indah Purnama
+                  Sari, 2021).</span></div>
             </div>
           </div>
+          <div class="col-sm-3">
+            <a class="btn btn-primary btn-sm" href="/perhitungan" role="button">Try Calculations</a>
+          </div>
         </div>
-
       </div>
     </div><!-- End K-Means -->
 
@@ -88,7 +92,7 @@
 
           <div class="d-flex">
             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-            <img src="assets/img/fold.png" alt="">
+              <img src="assets/img/fold.png" alt="">
             </div>
             <div class="ps-3">
               <h4>K-Fold</h4>
@@ -96,8 +100,10 @@
               <div><span class="text-muted small pt-2 ps-1">K-Fold adalah salah satu metode validasi silang (cross-validation) yang umum digunakan dalam pemodelan statistik dan pembelajaran mesin. Ini digunakan untuk menguji dan memvalidasi kinerja model dengan membagi data menjadi beberapa bagian atau "lipatan" (folds).</span></div>
             </div>
           </div>
+          <div class="col-sm-3">
+            <a class="btn btn-primary btn-sm" href="/perhitungan" role="button">Try Calculations</a>
+          </div>
         </div>
-
       </div>
     </div><!-- End K-Fold -->
 

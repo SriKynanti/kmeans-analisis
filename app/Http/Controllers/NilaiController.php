@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lesson;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class NilaiController extends Controller
 {
@@ -29,13 +33,113 @@ class NilaiController extends Controller
             }
         }
 
-        return view('nilai/nilai', compact('dt_lessons'));
+
+
+
+        $data = Lesson::all();// Ambil data dari sumber data yang sesuai, misalnya database
+        return view('nilai.nilai', compact('dt_lessons','data'));
+
+        
     }
 
+    public function import_excel(Request $request) 
+	{
+		// validasi
+		$this->validate($request, [
+			'userfile' => 'required|mimes:csv,xls,xlsx'
+		]);
+ 
+		// menangkap file excel
+		$file = $request->file('userfile');
+ 
+		try {
+
+            $file_excel = IOFactory::load($file->getRealPath());
+            $activeWorksheet = $file_excel->getActiveSheet();
+            
+            $row_limit = $activeWorksheet->getHighestDataRow();
+            $column_limit = $activeWorksheet->getHighestDataColumn();
+
+            $row_range = range(4, $row_limit);
+            $column_range = range('A', $column_limit);
+
+            $start = 4;
+
+            $data = array();
+            foreach ( $row_range AS $isi ) {
+
+                $nama = $activeWorksheet->getCell('B'.$start);
+                $pre_test = $activeWorksheet->getCell('C'.$start);
+                $post_test = $activeWorksheet->getCell('D'.$start);
+                $delay_test = $activeWorksheet->getCell('E'.$start);
+
+                array_push( $data, [
+
+                    'nama'      => $nama,
+                    'pre_test'  => $pre_test,
+                    'post_test' => $post_test,
+                    'delay_test' => $delay_test
+                ]);
+
+                
+                $start++;
+            }
 
 
-    public function download_excel()
+            DB::table("nilai")->insert( $data );
+
+            return redirect('nilai');
+
+        } catch ( Exception $e ) {
+            
+
+        }
+    }
+
+    public function showNilai()
     {
+        $data = Lesson::all();// Ambil data dari sumber data yang sesuai, misalnya database
+        return view('nilai.nilai', compact('data'));
+    }
+
+    public function download_excel( Request $request )
+    {
+
+        
+        $id_lesson = $request->id_lesson;
+        
+        // ambil informasi lesson 
+        $base_url = config('app.base_url');
+        $url = $base_url . 'API/get_lesson.php?id_lesson='. $id_lesson;
+
+        $dt_lesson = array();
+        $dt_mahasiswa = array();
+        $request = file_get_contents($url);
+        $response = json_decode( $request );
+        if ( $response->status == 200 ) {
+
+            foreach ( $response->result AS $isi ) {
+
+                array_push( $dt_lesson, $isi );
+            }
+        }
+
+
+        // API mhs
+        $url = $base_url . 'API/get_mahasiswa.php';
+        $request = file_get_contents($url);
+        $response = json_decode( $request );
+        if ( $response->status == 200 ) {
+
+            foreach ( $response->result AS $isi ) {
+
+                array_push( $dt_mahasiswa, $isi );
+            }
+        }
+
+
+
+        $nama_lesson = $dt_lesson[0]->nama_lesson;
 
         $spreadsheet = new Spreadsheet();
         $activeWorksheet = $spreadsheet->getActiveSheet();
@@ -43,7 +147,7 @@ class NilaiController extends Controller
         // Header Lesson
         $activeWorksheet->mergeCells('A1:B1');
         $activeWorksheet->setCellValue('A1', "Jenis Lesson : ");
-        $activeWorksheet->setCellValue('C1', '');
+        $activeWorksheet->setCellValue('C1', $id_lesson.' - '. $nama_lesson);
 
         // Header Tabel 
         $activeWorksheet->setCellValue('A3', "No.")->getColumnDimension('A')->setWidth(4);
@@ -51,7 +155,23 @@ class NilaiController extends Controller
         $activeWorksheet->setCellValue('C3', "Nilai Pre Test")->getColumnDimension('B')->setWidth(13);
         $activeWorksheet->setCellValue('D3', "Nilai Post Test")->getColumnDimension('B')->setWidth(13);
         $activeWorksheet->setCellValue('E3', "Nilai Delay Test")->getColumnDimension('B')->setWidth(13);
+
+
+        
+        $activeWorksheet->getColumnDimension('B')->setWidth(30);
+
         // Body
+
+        $mulai = 4;
+        $urutan = 1;
+        foreach ( $dt_mahasiswa AS $isi ) {
+
+            $activeWorksheet->setCellValue('A'. $mulai, $urutan);
+            $activeWorksheet->setCellValue('B'. $mulai, $isi->nama);
+
+            $mulai++;
+            $urutan++;
+        }
         
 
         // end ---

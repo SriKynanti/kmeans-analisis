@@ -9,6 +9,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Kmeans;
 use App\Http\Controllers\NilaiController;
+use App\Http\Controllers\ScatterPlotController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -45,14 +46,13 @@ Route::resource('dataset', DatasetController::class);
 Route::resource('dosen', DosenController::class);
 
 //Nilai
-Route::resource('nilai', NilaiController::class);
+Route::get('nilai', [NilaiController::class, 'index']);
 Route::post('nilai/download_excel', [NilaiController::class, 'download_excel']);
 
 //Klusterisasi
 Route::resource('perhitungan', KlusterisasiController::class);
-Route::get('/hasil', function () {
-    return view('klasterisasi/hasilperhitungan');
-});
+Route::get('/hasil-kmeans', [KlusterisasiController::class,'hasil']);
+Route::get('/hasil-kmeans/detail/{id}', [KlusterisasiController::class, 'detail']);
 //Laporan
 Route::resource('laporan', LaporanController::class);
 
@@ -66,6 +66,9 @@ Route::get("/pw", function() {
 Route::get("/hitung", [Kmeans::class, 'index']);
 Route::post('/kmeans/manual', [Kmeans::class, 'hitung_manual'])->name('kynan');
 
-
+Route::get('/scatter-plot', [ScatterPlotController::class, 'index'])->name('scatter.plot');
 
 Route::get('/dataset', [Kmeans::class,'dataset']);
+
+Route::post('/nilai/import_excel', [NilaiController::class, 'import_excel']);
+Route::get('/nilai/export_excel', [NilaiController::class, 'export_excel']);
