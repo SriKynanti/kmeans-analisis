@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KlusterisasiController;
 use App\Http\Controllers\LaporanController;
@@ -54,7 +55,7 @@ Route::resource('perhitungan', KlusterisasiController::class);
 Route::get('/hasil-kmeans', [KlusterisasiController::class,'hasil']);
 Route::get('/hasil-kmeans/detail/{id}', [KlusterisasiController::class, 'detail']);
 //Laporan
-Route::resource('laporan', LaporanController::class);
+Route::resource('history', HistoryController::class);
 
 
 Route::get("/pw", function() {

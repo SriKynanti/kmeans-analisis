@@ -41,8 +41,8 @@
         </a>
       </li>
       <li>
-        <a href="charts-apexcharts.html">
-          <i class="bi bi-circle"></i><span>Visualisasi</span>
+        <a href="/history">
+          <i class="bi bi-circle"></i><span>History</span>
         </a>
       </li>
     </ul>
