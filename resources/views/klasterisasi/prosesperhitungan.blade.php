@@ -58,11 +58,11 @@
               <tr>
                 <th>#</th>
                 <th>Nama</th>
-                <th>A</th>
-                <th>B</th>
-                <th>C</th>
-                <th>D</th>
-                <th>E</th>
+                <th>Waktu</th>
+                <th>Ground False</th>
+                <th>Warrant False</th>
+                <th>Kesalahan Keduanya</th>
+                <th>Nilai</th>
               </tr>
             </thead>  
             <tbody>
@@ -71,6 +71,11 @@
               <tr>
                 <td>{{ $index_mhs + 1 }}</td>
                 <td>{{ $isi_mhs->nama }}</td>
+                <td>{{ $isi_mhs->time }}</td>
+                <td>{{ $isi_mhs->salah_gnd }}</td>
+                <td>{{ $isi_mhs->salah_wr }}</td>
+                <td>{{ $isi_mhs->jumlah_gnd_wr }}</td>
+                <td>{{ $isi_mhs->nilai }}</td>
               </tr>
               @endforeach 
             </tbody>
@@ -88,11 +93,11 @@
               <tr>
                 <th>#</th>
                 <th>Nama</th>
-                <th>A</th>
-                <th>B</th>
-                <th>C</th>
-                <th>D</th>
-                <th>E</th>
+                <th>Waktu</th>
+                <th>Ground False</th>
+                <th>Warrant False</th>
+                <th>Kesalahan Keduanya</th>
+                <th>Nilai</th>
               </tr>
             </thead>  
             <tbody>
@@ -101,6 +106,11 @@
               <tr>
                 <td>{{ $index_mhs + 1 }}</td>
                 <td>{{ $isi_mhs->nama }}</td>
+                <td>{{ $isi_mhs->time }}</td>
+                <td>{{ $isi_mhs->salah_gnd }}</td>
+                <td>{{ $isi_mhs->salah_wr }}</td>
+                <td>{{ $isi_mhs->jumlah_gnd_wr }}</td>
+                <td>{{ $isi_mhs->nilai }}</td>
               </tr>
               @endforeach 
             </tbody>
@@ -200,159 +210,6 @@
     </div>
   </div>
   @endforeach 
-
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Centroid Awal</h4>
-          <form>
-            <!-- Table with stripped rows -->
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Nama</th>
-                  <th scope="col">Var 1</th>
-                  <th scope="col">Var 2</th>
-                  <th scope="col">Var 3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th>1</th>
-                  <th>Rheno</th>
-                  <th>19</th>
-                  <th>5</th>
-                  <th>50</th>
-                </tr>
-                <tr>
-                  <th>2</th>
-                  <th>Versa</th>
-                  <th>19</th>
-                  <th>5</th>
-                  <th>50</th>
-                </tr>
-              </tbody>
-            </table>
-            <!-- End Table with stripped rows -->
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Euclidean Distance</h4>
-          <form>
-            <!-- Table with stripped rows -->
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Nama</th>
-                  <th scope="col">dc1</th>
-                  <th scope="col">dc2</th>
-                  <th scope="col">dst</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th>1</th>
-                  <th>Rheno</th>
-                  <th>20,998</th>
-                  <th>0</th>
-                </tr>
-                <tr>
-                  <th>2</th>
-                  <th>Versa</th>
-                  <th>13,998</th>
-                  <th>0</th>
-                </tr>
-              </tbody>
-            </table>
-            <!-- End Table with stripped rows -->
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Hasil Cluster</h4>
-          <form>
-            <!-- Table with stripped rows -->
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">C1</th>
-                  <th scope="col">C2</th>
-                  <th scope="col">C3</th>
-                  <th scope="col">dst</th>
-                </tr>
-              </thead>
-              <tbody>
-              <tr>
-                  <th></th>
-                  <th>Rheno</th>
-                  <th>Sai</th>
-                  <th>Mei</th>
-                </tr>
-                <tr>
-                  <th></th>
-                  <th>Versa</th>
-                  <th>Rey</th>
-                  <th>Nita</th>
-                </tr>
-              </tbody>
-            </table>
-            <!-- End Table with stripped rows -->
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Centroid Baru(Rata-Rata cluster)</h4>
-          <form>
-            <!-- Table with stripped rows -->
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">C1</th>
-                  <th scope="col">C2</th>
-                  <th scope="col">C3</th>
-                  <th scope="col">dst</th>
-                </tr>
-              </thead>
-              <tbody>
-              <tr>
-                  <th>1</th>
-                  <th>15</th>
-                  <th>5</th>
-                  <th>0</th>
-                </tr>
-              </tbody>
-            </table>
-            <!-- End Table with stripped rows -->
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
 
   <div class="row">
     <div class="col-md-12">
