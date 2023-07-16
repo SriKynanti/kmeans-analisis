@@ -115,6 +115,8 @@ class Kmeans extends Controller
 
             echo "tidak dapat memproses, harap periksa form parameter anda";
         }
+
+        DB::table("variabel_pilihan")->insert( $variabel );
     }
 
 

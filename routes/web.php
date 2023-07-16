@@ -6,7 +6,6 @@ use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KlusterisasiController;
-use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Kmeans;
 use App\Http\Controllers\NilaiController;

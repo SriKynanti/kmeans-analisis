@@ -12,7 +12,7 @@
 </div><!-- End Page Title -->
 
 <div class="row">
-  <div class="col-lg-4">
+  <div class="col-lg-3">
 
     <div class="card">
       <div class="card-body">
@@ -70,7 +70,19 @@
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="v[]" value="nilai" id="5" {{ $statusCheckbox['nilai'] }}>
                 <label class="form-check-label" for="5">
-                  Nilai
+                  Nilai Pre Test
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="v[]" value="nilai" id="6" {{ $statusCheckbox['nilai'] }}>
+                <label class="form-check-label" for="5">
+                  Nilai Post Test
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="v[]" value="nilai" id="7" {{ $statusCheckbox['nilai'] }}>
+                <label class="form-check-label" for="5">
+                  Nilai Deleyed Test
                 </label>
               </div>
 
@@ -96,12 +108,11 @@
                 @endif
               @endforeach 
             </select>
-            <small>Pilih kelas diatas</small>
           </div>
 
           <div class="col-md-11">
             <div class="form-group">
-              <label for="">Lessons</label>
+              <label for="">Pilih Lessons:</label>
               <select name="id_lesson" class="form-control" id="">
                 @foreach ( $dt_lessons AS $isi )
                 <option value="{{ $isi->id_lesson }}">{{ $isi->nama_lesson }}</option>
@@ -123,7 +134,7 @@
 
   </div>
 
-  <div class="col-xl-8">
+  <div class="col-xl-9">
 
 
     <form action="{{ url('kmeans/manual') }}" method="post">
@@ -191,6 +202,9 @@
               <th scope="col">Nama</th>
               <th scope="col">Kelas</th>
               <th scope="col">Time</th>
+              <th scope="col">Ground False</th>
+              <th scope="col">Warrant False</th>
+              <th scope="col">Kesalahan Keduanya</th>
               <th scope="col">Nilai</th>
             </tr>
           </thead>
@@ -200,10 +214,13 @@
               <td>
                 <input type="checkbox" name="email[]" value="{{ $isi['email'] }}">
               </td>
-              <td>{{ $isi['nama'] }}</td>
-              <td>{{ $isi['kelas'] }}</td>
-              <td>{{ $isi['time'] }}</td>
-              <td>{{ $isi['nilai'] }}</td>
+              <td>{{ $isi['nama'] ?? 'NULL'}}</td>
+              <td>{{ $isi['kelas'] ?? 'NULL'}}</td>
+              <td>{{ $isi['time'] ?? 'NULL'}}</td>
+              <td>{{ $isi['salah_gnd'] ?? 'NULL'}}</td>
+              <td>{{ $isi['salah_wr'] ?? 'NULL'}}</td>
+              <td>{{ $isi['jumlah_gnd_wr'] ?? 'NULL'}}</td>
+              <td>{{ $isi['nilai'] ?? 'NULL'}}</td>
             </tr>
             @endforeach 
           </tbody>
