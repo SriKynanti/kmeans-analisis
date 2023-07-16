@@ -72,7 +72,18 @@ class KlusterisasiController extends Controller
             //     }
             // }
 
-            $dataset = $this->dataset($res->id_lesson);
+
+            $jenisNilai = "";
+            foreach ( $res->v AS $variab ) {
+
+                if ( $variab == "pre" || $variab == "post" || $variab == "delay" ) {
+
+                    $jenisNilai = $variab;
+                    break;
+                }
+            }
+
+            $dataset = $this->dataset($res->id_lesson, $jenisNilai);
 
             // ambil data nilai 
 
@@ -156,7 +167,7 @@ class KlusterisasiController extends Controller
     }
 
 
-    function dataset( $id_lesson ) {
+    function dataset( $id_lesson, $jenisNilai ) {
 
 
         // $id_lesson = "11";
@@ -275,7 +286,17 @@ class KlusterisasiController extends Controller
 
                 if ( $cek_nilai->count() > 0 ) {
 
-                    $nilai = $cek_nilai[0]->post_test; // menggunakan post test
+                    if ( $jenisNilai == "pre" ) {
+
+                        $nilai = $cek_nilai[0]->pre_test; // menggunakan post test    
+                    } else if ( $jenisNilai == "post" ) {
+
+                        $nilai = $cek_nilai[0]->post_test; // menggunakan post test    
+                    } else {
+
+                        $nilai = $cek_nilai[0]->delay_test; // menggunakan post test    
+                    }
+                    
                 }
 
                 
@@ -291,7 +312,8 @@ class KlusterisasiController extends Controller
                     'salah_wr'   => $salah_wr,
                     'salah_gnd'     => $salah_gnd,
                     'jumlah_gnd_wr' => $jumlah_gnd_wr,
-                    'nilai'       => $nilai
+                    'nilai'       => $nilai,
+                    'nilai_type'  => $jenisNilai
                 ]);
             }
         }

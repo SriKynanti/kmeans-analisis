@@ -22,7 +22,7 @@
         <form class="row g-3" method="GET">
           <div class="row mb-3">
             <legend class="col-form-label">Pilih Variabel: </legend>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
 
               <div class="form-check">
                 @php 
@@ -35,11 +35,20 @@
                     'jumlah_gnd_wr'=> '',
                     'nilai'        => ''
                   );
+
+                  $tipe_nilai = "";
                   if ( $res->filled('v') ) {
 
                     foreach ( $res->v AS $variab ) {
 
                       $statusCheckbox[$variab] = 'checked';
+
+
+                      if ( $variab == "pre" || $variab == "post" || $variab == "delay" ) {
+
+                        $statusCheckbox["nilai"] = 'checked';
+                        $tipe_nilai = $variab;
+                      }
                     }
                   }
 
@@ -67,27 +76,26 @@
                   Kesalahan Keduanya
                 </label>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="v[]" value="nilai" id="5" {{ $statusCheckbox['nilai'] }}>
-                <label class="form-check-label" for="5">
-                  Nilai Pre Test
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="v[]" value="nilai" id="6" {{ $statusCheckbox['nilai'] }}>
-                <label class="form-check-label" for="5">
-                  Nilai Post Test
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="v[]" value="nilai" id="7" {{ $statusCheckbox['nilai'] }}>
-                <label class="form-check-label" for="5">
-                  Nilai Deleyed Test
-                </label>
-              </div>
 
             </div>
           </div>
+
+          <div class="col-md-12">
+            <legend class="col-form-label">Pilih Jenis Nilai:</legend>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="v[]" id="gridRadios1" value="pre" {{ $tipe_nilai == "pre" ? "checked" : "" }}>
+                <label class="form-check-label" for="gridRadios1">Pre Test</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="v[]" id="gridRadios2" value="post" {{ $tipe_nilai == "post" ? "checked" : "" }}>
+                <label class="form-check-label" for="gridRadios2">Post Test</label>
+              </div>
+              <div class="form-check disabled">
+                <input class="form-check-input" type="radio" name="v[]" id="gridRadios" value="delay" {{ $tipe_nilai == "delay" ? "checked" : "" }}>
+                <label class="form-check-label" for="gridRadios3">Delay Test</label>
+              </div>
+          </div>
+
           <div class="col-md-11">
             <legend class="col-form-label">Pilih Kelas:</legend>
             <select multiple name="kelas[]" id="shapes" required="">
@@ -195,6 +203,7 @@
         </div>
         
         <!-- Table with stripped rows -->
+
         <table class="table datatable-bug">
           <thead>
             <tr>
@@ -205,7 +214,7 @@
               <th scope="col">Ground False</th>
               <th scope="col">Warrant False</th>
               <th scope="col">Kesalahan Keduanya</th>
-              <th scope="col">Nilai</th>
+              <th scope="col">Nilai {{ $tipe_nilai }}</th>
             </tr>
           </thead>
           <tbody>
@@ -214,13 +223,13 @@
               <td>
                 <input type="checkbox" name="email[]" value="{{ $isi['email'] }}">
               </td>
-              <td>{{ $isi['nama'] ?? 'NULL'}}</td>
-              <td>{{ $isi['kelas'] ?? 'NULL'}}</td>
-              <td>{{ $isi['time'] ?? 'NULL'}}</td>
-              <td>{{ $isi['salah_gnd'] ?? 'NULL'}}</td>
-              <td>{{ $isi['salah_wr'] ?? 'NULL'}}</td>
-              <td>{{ $isi['jumlah_gnd_wr'] ?? 'NULL'}}</td>
-              <td>{{ $isi['nilai'] ?? 'NULL'}}</td>
+              <td>{{ $isi['nama']}}</td>
+              <td>{{ $isi['kelas']}}</td>
+              <td>{{ $statusCheckbox['time'] == "checked" ? $isi['time'] : 'NULL'}}</td>
+              <td>{{ $statusCheckbox['salah_gnd'] == "checked" ? $isi['salah_gnd'] : 'NULL'}}</td>
+              <td>{{ $statusCheckbox['salah_wr'] == "checked" ? $isi['salah_wr'] : 'NULL'}}</td>
+              <td>{{ $statusCheckbox['jumlah_gnd_wr'] == "checked" ? $isi['jumlah_gnd_wr'] : 'NULL'}}</td>
+              <td>{{ $isi['nilai']}}</td>
             </tr>
             @endforeach 
           </tbody>

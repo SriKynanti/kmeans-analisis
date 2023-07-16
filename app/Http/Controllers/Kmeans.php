@@ -49,9 +49,21 @@ class Kmeans extends Controller
         }
 
 
+        // change pre, post, or delay to nilai (general)
+        $jenisNilai = "";
+        foreach ( $variabel AS $index => $variab ) {
+
+            if ( $variab == "pre" || $variab == "post" || $variab == "delay" ) {
+                $jenisNilai = $variab;
+                $variabel[$index] = "nilai";
+                break;
+            }
+        }
+
+
         if ( count( $ids ) > 0 && count($kelas) > 0 && count($variabel) > 0 ) {
 
-            $this->hitung( $variabel, $ids, $kelas, $request->id_lesson, "intuisi" );
+            $this->hitung( $variabel, $ids, $kelas, $request->id_lesson, $jenisNilai, "intuisi" );
             return redirect('hasil-kmeans');
             
         } else {
@@ -105,10 +117,21 @@ class Kmeans extends Controller
             $variabel = explode(',', $request->v);
         }
 
+        // change pre, post, or delay to nilai (general)
+        $jenisNilai = "";
+        foreach ( $variabel AS $index => $variab ) {
+
+            if ( $variab == "pre" || $variab == "post" || $variab == "delay" ) {
+                $jenisNilai = $variab;
+                $variabel[$index] = "nilai";
+                break;
+            }
+        }
+
 
         if ( count( $ids ) > 0 && count($kelas) > 0 && count($variabel) > 0 ) {
 
-            $this->hitung( $variabel, $ids, $kelas, $request->id_lesson );
+            $this->hitung( $variabel, $ids, $kelas, $request->id_lesson, $jenisNilai );
             return redirect('hasil-kmeans');
             
         } else {
@@ -121,7 +144,7 @@ class Kmeans extends Controller
 
 
 
-    function hitung( $dt_variabel_pilihan, $dt_ids, $memilih_kelas, $id_lesson ) { 
+    function hitung( $dt_variabel_pilihan, $dt_ids, $memilih_kelas, $id_lesson, $jenisNilai ) { 
 
         // menyiapkan variabel 
         $dt_variabel = array(
@@ -131,7 +154,7 @@ class Kmeans extends Controller
 
 
         // init awal
-        $datasets = $this->dataset($id_lesson);
+        $datasets = $this->dataset($id_lesson, $jenisNilai);
         $iterasi = 0;
         $arr_hasil_iterasi_keseluruhan = array();
 
@@ -453,13 +476,33 @@ class Kmeans extends Controller
         // echo print_r($final);
         // echo "</pre>";
 
-        DB::table("klusterisasi")->insert( $final );
+        $klusterisasi_id = DB::table("klusterisasi")->insertGetId( $final );
+        $dataset_insert_db = array();
+
+        foreach ( $dataset_filtered AS $isi ) {
+
+            array_push( $dataset_insert_db,  [
+
+                'klusterisasi_id'   => $klusterisasi_id,
+                'nama'  => $isi['nama'],
+                'kelas' => $isi['kelas'],
+                'time'  => $isi['time'],
+                'salah_wr'      => $isi['salah_wr'],
+                'salah_gnd'     => $isi['salah_gnd'],
+                'jumlah_gnd_wr' => $isi['jumlah_gnd_wr'],
+                'nilai'         => $isi['nilai'],
+                'tipe_nilai'    => $isi['tipe_nilai'],
+            ]);
+        }
+
+
+        DB::table("dataset")->insert( $dataset_insert_db );
     }
 
 
 
     // dataset 
-    function dataset( $id_lesson ) {
+    function dataset( $id_lesson, $jenisNilai ) {
 
 
         // $id_lesson = "11";
@@ -570,9 +613,21 @@ class Kmeans extends Controller
                 // cari data nilai berdasarkan nama mahasiswa
                 $cek_nilai = DB::table("nilai")->where("nama", $name)->get();
                 $nilai = 0;
-                if ( $cek_nilai->count() > 0 ) {
+                if ( $cek_nilai->count() > 0 && $jenisNilai != "" ) {
 
-                    $nilai = $cek_nilai[0]->post_test; // menggunakan post test
+                    if ( $jenisNilai == "pre" ) {
+
+                        $nilai = $cek_nilai[0]->pre_test; // menggunakan post test    
+
+                    } else if ( $jenisNilai == "post" ) {
+
+                        $nilai = $cek_nilai[0]->post_test; // menggunakan post test    
+                    
+                    }  else if ( $jenisNilai == "delay" ) {
+
+                        $nilai = $cek_nilai[0]->delay_test; // menggunakan post test    
+                    }
+                    
                 }
 
 
@@ -587,7 +642,8 @@ class Kmeans extends Controller
                     'salah_wr'   => $salah_wr,
                     'salah_gnd'     => $salah_gnd,
                     'jumlah_gnd_wr' => $jumlah_gnd_wr,
-                    'nilai'       => $nilai
+                    'nilai'       => $nilai,
+                    'tipe_nilai'  => $jenisNilai
                 ]);
             }
         }
