@@ -173,7 +173,7 @@
       for ( $i = 0; $i < $jumlah; $i++ ) {
 
         // random index
-        $rand_index = rand(0, 18);
+        $rand_index = rand(0, count($dt_mahasiswa) - 1);
         array_push( $emails, $dt_mahasiswa[$rand_index]['email'] );
       }
 

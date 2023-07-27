@@ -212,7 +212,6 @@ class Kmeans extends Controller
                     $total += pow($x - $y, 2);
                 }
 
-
                 $akar = sqrt($total);
                 // echo "Hasil jarak ".sqrt($total)." <br>";
 
